@@ -311,12 +311,13 @@ function escLines(s) {
 }
 
 function nextQuoteNumber() {
-  var n = 1;
-  try { n = parseInt(localStorage.getItem('spot_last_qno') || '0') + 1; } catch(e) {}
+  var n;
+  try {
+    var stored = parseInt(localStorage.getItem('spot_last_qno') || '0');
+    n = Math.max(stored, 517562) + 1;
+  } catch(e) { n = 517563; }
   try { localStorage.setItem('spot_last_qno', n); } catch(e) {}
-  var s = String(n);
-  while (s.length < 3) s = '0' + s;
-  return 'Q' + s;
+  return 'Q' + String(n);
 }
 
 function fmtDate(d) {
