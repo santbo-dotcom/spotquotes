@@ -291,7 +291,7 @@ function initApp() {
   try {
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('f-date').value = today;
-    document.getElementById('f-qno').value = 'Q' + Date.now().toString().slice(-6);
+    document.getElementById('f-qno').value = nextQuoteNumber();
     var ind = document.getElementById('js-indicator');
     if (ind) ind.style.display = 'none';
   } catch(e) {}
@@ -558,7 +558,7 @@ function delQ(i, e) {
 
 function newQuote() {
   if (!confirm('Start a new quote? Unsaved changes will be lost.')) return;
-  document.getElementById('f-qno').value   = 'Q' + Date.now().toString().slice(-6);
+  document.getElementById('f-qno').value   = nextQuoteNumber();
   document.getElementById('f-date').value  = new Date().toISOString().split('T')[0];
   document.getElementById('f-valid').value = 30;
   document.getElementById('f-addr').value  = '';
