@@ -304,6 +304,9 @@ function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function escLines(s) {
+  return esc(s).replace(/\n/g,'<br>');
+}
 
 function fmtDate(d) {
   if (!d) return '';
@@ -586,7 +589,7 @@ function buildPrintTable(items) {
     var it = items[i];
     var bg = i % 2 === 1 ? 'background:#f7f9fb;' + CXACT : '';
     rows += '<tr style="' + bg + '">'
-      + '<td style="padding:7pt 10pt;font-size:10.5pt;line-height:1.55;border-bottom:1pt solid #e8e8e8;width:74%;">' + esc(it.t) + '</td>'
+      + '<td style="padding:7pt 10pt;font-size:10.5pt;line-height:1.55;border-bottom:1pt solid #e8e8e8;width:74%;">' + escLines(it.t) + '</td>'
       + '<td style="padding:7pt 10pt;text-align:right;font-size:10.5pt;font-weight:600;border-bottom:1pt solid #e8e8e8;white-space:nowrap;">' + (it.p > 0 ? fmt(it.p) : '&mdash;') + '</td>'
       + '</tr>';
   }
@@ -600,7 +603,7 @@ function buildPrintTable(items) {
 function buildPrintList(items) {
   var li = '';
   for (var i = 0; i < items.length; i++) {
-    li += '<li style="font-size:10.5pt;line-height:1.55;margin-bottom:5pt;">' + esc(items[i].t) + '</li>';
+    li += '<li style="font-size:10.5pt;line-height:1.55;margin-bottom:5pt;">' + escLines(items[i].t) + '</li>';
   }
   return '<ul style="margin:4pt 0 0;padding:0 0 0 16pt;">' + li + '</ul>';
 }
@@ -636,7 +639,7 @@ function generatePDF() {
   if (prepItems.length) {
     var lis = '';
     for (var i = 0; i < prepItems.length; i++) {
-      lis += '<li style="font-size:10.5pt;line-height:1.55;margin-bottom:5pt;">' + esc(prepItems[i].t) + '</li>';
+      lis += '<li style="font-size:10.5pt;line-height:1.55;margin-bottom:5pt;">' + escLines(prepItems[i].t) + '</li>';
     }
     prepH = '<div style="margin-bottom:16pt;">'
       + secTitle('Paint Job Preparation','#e8f5e9','#1b5e20')
