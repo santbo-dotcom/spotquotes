@@ -631,6 +631,56 @@ function secTitle(label, bg, fc) {
   return '<div style="' + CXACT + 'background:' + bg + ';color:' + fc + ';padding:6pt 11pt;border-radius:3pt;font-size:9.5pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:8pt;">' + label + '</div>';
 }
 
+function exportExcel() {
+  var saves = [];
+  try { saves = JSON.parse(localStorage.getItem('spotQ') || '[]'); } catch(e) {}
+  if (!saves.length) { showToast('No saved quotes to export.'); return; }
+
+  var cols = ['Quote #','Date','Client Name','Email','Greeting','Job Address',
+              'Interior ($)','Exterior ($)','Subtotal ex GST','GST (10%)','Total inc GST',
+              'Deposit','Balance','Valid Days','Saved At'];
+
+  function csvCell(v) {
+    v = (v === undefined || v === null) ? '' : String(v);
+    if (v.indexOf(',') >= 0 || v.indexOf('"') >= 0 || v.indexOf('\n') >= 0)
+      v = '"' + v.replace(/"/g, '""') + '"';
+    return v;
+  }
+
+  var rows = [cols.map(csvCell).join(',')];
+  for (var i = 0; i < saves.length; i++) {
+    var s = saves[i];
+    var intTotal = 0, extTotal = 0;
+    if (s.iItems) for (var j = 0; j < s.iItems.length; j++) intTotal += parseFloat(s.iItems[j].p) || 0;
+    if (s.eItems) for (var j = 0; j < s.eItems.length; j++) extTotal += parseFloat(s.eItems[j].p) || 0;
+    var sub = s.mode === 'manual' ? (s.manual || 0) : (intTotal + extTotal);
+    var gst = sub * 0.1;
+    var tot = sub + gst;
+    var dep = s.dep || 0;
+    var bal = Math.max(0, tot - dep);
+    rows.push([
+      s.qno, s.date, s.name, s.email, s.greet, s.addr,
+      intTotal.toFixed(2), extTotal.toFixed(2),
+      sub.toFixed(2), gst.toFixed(2), tot.toFixed(2),
+      dep.toFixed(2), bal.toFixed(2),
+      s.valid || 30,
+      s.savedAt ? s.savedAt.replace('T',' ').slice(0,19) : ''
+    ].map(csvCell).join(','));
+  }
+
+  var csv = rows.join('\r\n');
+  var blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'SPOT_Quotes_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Excel file downloaded!');
+}
+
 function generatePDF() {
   var v = recalc();
   var dep  = parseFloat(document.getElementById('f-dep').value)  || 0;
