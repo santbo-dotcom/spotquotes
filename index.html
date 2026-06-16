@@ -310,6 +310,15 @@ function escLines(s) {
   return esc(s).replace(/\n/g,'<br>');
 }
 
+function nextQuoteNumber() {
+  var n = 1;
+  try { n = parseInt(localStorage.getItem('spot_last_qno') || '0') + 1; } catch(e) {}
+  try { localStorage.setItem('spot_last_qno', n); } catch(e) {}
+  var s = String(n);
+  while (s.length < 3) s = '0' + s;
+  return 'Q' + s;
+}
+
 function fmtDate(d) {
   if (!d) return '';
   var p = d.split('-');
