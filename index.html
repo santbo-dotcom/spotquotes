@@ -830,7 +830,32 @@ function generatePDF() {
   document.getElementById('p-body').innerHTML =
     titleBar + clientH + prepH + intH + extH + totH + validH + payH + page2;
 
-  setTimeout(function(){ window.print(); }, 200);
+  // Compute int/ext totals for the data sidecar
+  var intTotal = 0, extTotal = 0;
+  for (var i = 0; i < intItems.length; i++) intTotal += parseFloat(intItems[i].p) || 0;
+  for (var i = 0; i < extItems.length; i++) extTotal += parseFloat(extItems[i].p) || 0;
+
+  // Drop a data file into Downloads so the Mac auto-adds a row to Excel
+  try {
+    var sidecar = {
+      qno: qno, date: dateStr, name: name,
+      email: document.getElementById('f-email').value,
+      greeting: greet, address: addr,
+      interior: intTotal.toFixed(2), exterior: extTotal.toFixed(2),
+      subtotal: v.sub.toFixed(2), gst: v.gst.toFixed(2), total: v.tot.toFixed(2),
+      deposit: dep.toFixed(2), balance: bal.toFixed(2),
+      validDays: validD, savedAt: new Date().toISOString()
+    };
+    var blob = new Blob([JSON.stringify(sidecar)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'SPOT_Quote_' + qno + '.json';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(e) {}
+
+  setTimeout(function(){ window.print(); }, 300);
 }
 
 // Run immediately — script is at end of body so DOM is ready
