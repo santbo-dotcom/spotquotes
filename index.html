@@ -235,7 +235,13 @@ textarea{resize:vertical;min-height:52px;line-height:1.4}
     <button class="btn-add" onclick="addItem('list-int',true)">+ Add Interior Item</button>
   </div>
   <div class="card" id="card-ext">
-    <div class="sec-head extr">&#127969; Exterior Surfaces</div>
+    <div class="sec-head extr" style="justify-content:space-between;">
+      <span>&#127969; Exterior Surfaces</span>
+      <label style="font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;">
+        <input type="checkbox" id="ext-newpage" style="cursor:pointer;width:14px;height:14px;">
+        New page in PDF
+      </label>
+    </div>
     <div class="items-list" id="list-ext">
       <div class="item-row with-price"><textarea class="item-text">Walls – Apply 1 coat of primer &quot;exposed area&quot; followed by 2 coats of paint.</textarea><input type="number" class="item-price" placeholder="$0" step="0.01" min="0" oninput="recalc()"><button class="btn-rm" onclick="removeMe(this)">&#215;</button></div>
       <div class="item-row with-price"><textarea class="item-text">Rafters, Gutters, Eaves – Apply 1 coat of oil-based undercoat followed by 2 coats of enamel paint to all surfaces.</textarea><input type="number" class="item-price" placeholder="$0" step="0.01" min="0" oninput="recalc()"><button class="btn-rm" onclick="removeMe(this)">&#215;</button></div>
@@ -725,7 +731,8 @@ function generatePDF() {
 
   var extH = '';
   if (extItems.length) {
-    extH = '<div style="margin-bottom:16pt;break-inside:avoid;page-break-inside:avoid;">'
+    var extNewPage = document.getElementById('ext-newpage') && document.getElementById('ext-newpage').checked;
+    extH = '<div style="margin-bottom:16pt;break-inside:avoid;page-break-inside:avoid;' + (extNewPage ? 'page-break-before:always;break-before:page;' : '') + '">'
       + secTitle('Exterior Surfaces','#fef3c7','#92400e')
       + (mode === 'itemized' ? buildPrintTable(extItems) : buildPrintList(extItems))
       + '</div>';
