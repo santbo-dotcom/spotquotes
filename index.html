@@ -607,7 +607,7 @@ function buildPrintTable(items) {
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
     var bg = i % 2 === 1 ? 'background:#f7f9fb;' + CXACT : '';
-    rows += '<tr style="' + bg + '">'
+    rows += '<tr style="' + bg + 'break-inside:avoid;page-break-inside:avoid;">'
       + '<td style="padding:7pt 10pt;font-size:10.5pt;line-height:1.55;border-bottom:1pt solid #e8e8e8;width:74%;">' + escLines(it.t) + '</td>'
       + '<td style="padding:7pt 10pt;text-align:right;font-size:10.5pt;font-weight:600;border-bottom:1pt solid #e8e8e8;white-space:nowrap;">' + (it.p > 0 ? fmt(it.p) : '&mdash;') + '</td>'
       + '</tr>';
@@ -710,14 +710,14 @@ function generatePDF() {
     for (var i = 0; i < prepItems.length; i++) {
       lis += '<li style="font-size:10.5pt;line-height:1.55;margin-bottom:5pt;">' + escLines(prepItems[i].t) + '</li>';
     }
-    prepH = '<div style="margin-bottom:16pt;">'
+    prepH = '<div style="margin-bottom:16pt;break-inside:avoid;page-break-inside:avoid;">'
       + secTitle('Paint Job Preparation','#e8f5e9','#1b5e20')
       + '<ul style="margin:0;padding:0 0 0 16pt;">' + lis + '</ul></div>';
   }
 
   var intH = '';
   if (intItems.length) {
-    intH = '<div style="margin-bottom:16pt;">'
+    intH = '<div style="margin-bottom:16pt;break-inside:avoid;page-break-inside:avoid;">'
       + secTitle('Interior Surfaces','#dbeafe','#1e3a8a')
       + (mode === 'itemized' ? buildPrintTable(intItems) : buildPrintList(intItems))
       + '</div>';
@@ -725,7 +725,7 @@ function generatePDF() {
 
   var extH = '';
   if (extItems.length) {
-    extH = '<div style="margin-bottom:16pt;">'
+    extH = '<div style="margin-bottom:16pt;break-inside:avoid;page-break-inside:avoid;">'
       + secTitle('Exterior Surfaces','#fef3c7','#92400e')
       + (mode === 'itemized' ? buildPrintTable(extItems) : buildPrintList(extItems))
       + '</div>';
